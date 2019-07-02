@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+usage="Usage: $(basename $0) FORMAT FILE..."
+
+example="Example: $(basename $0) \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
+
+if [[ "$1" == "--help" ]]; then
+	echo "$usage"
+	echo
+	echo "$example"
+
+	exit 1
+fi
+
+if [[ "$#" -lt "2" ]]; then
+	echo "$(basename $0): missing operands"
+	echo
+	echo "$usage"
+	echo
+	echo "$example"
+
+	exit 1
+fi
+
+format=$1
+shift
+
+if [[ "$format" != *"%f"* ]]; then
+	echo 'Format missing "%f"'
+	echo
+	echo "$example"
+
+	exit 1
+fi
+
+cmds=
+trap 'rm -f "$cmds"' EXIT
+cmds=$(mktemp) || exit 1
+
+for file in "$@"; do
+	echo ${format//%f/\'${file//\'/\'\\\'\'}\'} >> "$cmds"
+done
+
+if [[ -z "$EDITOR" ]]; then
+	echo 'EDITOR Environment variable not set'
+
+	exit 1
+fi
+
+$EDITOR "$cmds"
+
+if [[ ! -s "$cmds" ]]; then
+	echo 'No cmds to run'
+
+	exit 1
+fi
+
+source "$cmds"
