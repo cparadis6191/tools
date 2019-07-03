@@ -4,20 +4,29 @@ usage="Usage: $(basename $0) FORMAT FILE..."
 
 example="Example: $(basename $0) \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
 
-if [[ "$1" == "--help" ]]; then
-	echo "$usage"
-	echo
-	echo "$example"
+while getopts "h" OPT; do
+	case "$OPT" in
+		h)
+			echo "$usage"
+			echo
+			echo "$example"
 
-	exit 1
-fi
+			exit 0
+			;;
+		*)
+			exit 1
+			;;
+	esac
+done
 
 if [[ "$#" -lt "2" ]]; then
-	echo "$(basename $0): missing operands"
-	echo
-	echo "$usage"
-	echo
-	echo "$example"
+	{
+		echo "$(basename $0): missing operands"
+		echo
+		echo "$usage"
+		echo
+		echo "$example"
+	} 1>&2
 
 	exit 1
 fi
@@ -26,9 +35,11 @@ format=$1
 shift
 
 if [[ "$format" != *"%f"* ]]; then
-	echo 'Format missing "%f"'
-	echo
-	echo "$example"
+	{
+		echo 'Format missing "%f"'
+		echo
+		echo "$example"
+	} 1>&2
 
 	exit 1
 fi
@@ -42,7 +53,9 @@ for file in "$@"; do
 done
 
 if [[ -z "$EDITOR" ]]; then
-	echo 'EDITOR Environment variable not set'
+	{
+		echo 'EDITOR environment variable not set'
+	} 1>&2
 
 	exit 1
 fi
@@ -50,7 +63,9 @@ fi
 $EDITOR "$cmds"
 
 if [[ ! -s "$cmds" ]]; then
-	echo 'No cmds to run'
+	{
+		echo 'No cmds to run'
+	} 1>&2
 
 	exit 1
 fi
