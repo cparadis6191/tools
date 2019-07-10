@@ -33,10 +33,10 @@ if [ ! -t 0 ]; then
 	cat - > "$tmp"
 fi
 
-# Edit temp file
+# Edit the temp file
 if [ "${VISUAL:-$EDITOR}" ]; then
 	$EDITOR "$tmp" < /dev/tty > /dev/tty
 fi
 
-# Send file to stdout
+# Send the temp file to stdout
 cat "$tmp"

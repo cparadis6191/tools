@@ -31,7 +31,7 @@ if [[ "$#" -lt "2" ]]; then
 	exit 1
 fi
 
-format=$1
+format="$1"
 shift
 
 if [[ "$format" != *"%f"* ]]; then
@@ -48,7 +48,7 @@ cmds="$(mktemp)" || exit 1
 trap 'rm -f "$cmds"' EXIT
 
 for file in "$@"; do
-	echo ${format//%f/\'${file//\'/\'\\\'\'}\'} >> "$cmds"
+	echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"
 done
 
 if [[ -z "$EDITOR" ]]; then
@@ -59,6 +59,7 @@ if [[ -z "$EDITOR" ]]; then
 	exit 1
 fi
 
+# Edit the cmds
 $EDITOR "$cmds"
 
 if [[ ! -s "$cmds" ]]; then
