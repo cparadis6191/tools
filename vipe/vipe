@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+usage="Usage: command | $(basename $0) | command"
+
+while getopts "h" OPT; do
+	case "$OPT" in
+		h)
+			echo "$usage"
+
+			exit 0
+			;;
+		*)
+			exit 1
+			;;
+	esac
+done
+
+if [[ "$#" -ne "0" ]]; then
+	{
+		echo "$(basename $0): unexpected operands"
+		echo
+		echo "$usage"
+	} 1>&2
+
+	exit 1
+fi
+
+tmp="$(mktemp)" || exit 1
+trap 'rm "$tmp"' EXIT
+
+# Send stdin, if it exists, to the temp file
+if [ ! -t 0 ]; then
+	cat - > "$tmp"
+fi
+
+# Edit temp file
+if [ "${VISUAL:-$EDITOR}" ]; then
+	$EDITOR "$tmp" < /dev/tty > /dev/tty
+fi
+
+# Send file to stdout
+cat "$tmp"
