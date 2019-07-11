@@ -34,9 +34,7 @@ if [ ! -t 0 ]; then
 fi
 
 # Edit the temp file
-if [ "${VISUAL:-$EDITOR}" ]; then
-	$EDITOR "$tmp" < /dev/tty > /dev/tty
-fi
+${VISUAL:-${EDITOR:-vim}} "$tmp" < /dev/tty > /dev/tty || exit 1
 
 # Send the temp file to stdout
 cat "$tmp"

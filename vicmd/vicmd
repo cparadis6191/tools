@@ -51,16 +51,8 @@ for file in "$@"; do
 	echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"
 done
 
-if [[ -z "$EDITOR" ]]; then
-	{
-		echo 'EDITOR environment variable not set'
-	} 1>&2
-
-	exit 1
-fi
-
 # Edit the cmds
-$EDITOR "$cmds"
+${VISUAL:-${EDITOR:-vim}} "$cmds" || exit 1
 
 if [[ ! -s "$cmds" ]]; then
 	{
@@ -70,4 +62,5 @@ if [[ ! -s "$cmds" ]]; then
 	exit 1
 fi
 
+# Run the cmds
 source "$cmds"
