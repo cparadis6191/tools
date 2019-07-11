@@ -15,7 +15,7 @@ while getopts "h" OPT; do
 	esac
 done
 
-if [[ "$#" -ne "0" ]]; then
+if [ "$#" -ne "0" ]; then
 	{
 		echo "$(basename $0): unexpected operands"
 		echo
