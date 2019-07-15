@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-usage="Usage: $(basename $0) FORMAT FILE..."
+usage="Usage: $(basename -- "$0") FORMAT FILE..."
 
-example="Example: $(basename $0) \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
+example="Example: $(basename -- "$0") \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
 
-while getopts "h" OPT; do
-	case "$OPT" in
+while getopts h OPT; do
+	case $OPT in
 		h)
 			echo "$usage"
 			echo
@@ -19,9 +19,9 @@ while getopts "h" OPT; do
 	esac
 done
 
-if [[ "$#" -lt "2" ]]; then
+if [[ $# -lt 2 ]]; then
 	{
-		echo "$(basename $0): missing operands"
+		echo "$(basename -- "$0"): missing operands"
 		echo
 		echo "$usage"
 		echo
@@ -34,7 +34,7 @@ fi
 format="$1"
 shift
 
-if [[ "$format" != *"%f"* ]]; then
+if [[ "$format" != *%f* ]]; then
 	{
 		echo 'Format missing "%f"'
 		echo
@@ -44,15 +44,15 @@ if [[ "$format" != *"%f"* ]]; then
 	exit 1
 fi
 
-cmds="$(mktemp)" || exit 1
-trap 'rm -f "$cmds"' EXIT
+cmds=$(mktemp) || exit 1
+trap 'rm -f -- "$cmds"' EXIT
 
 for file in "$@"; do
 	echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"
 done
 
 # Edit the cmds
-${VISUAL:-${EDITOR:-vim}} "$cmds" || exit 1
+${VISUAL:-${EDITOR:-vi}} "$cmds" || exit 1
 
 if [[ ! -s "$cmds" ]]; then
 	{

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-usage="Usage: command | $(basename $0) | command"
+usage="Usage: command | $(basename -- "$0") [FILE] | command"
 
-while getopts "h" OPT; do
-	case "$OPT" in
+while getopts h OPT; do
+	case $OPT in
 		h)
 			echo "$usage"
 
@@ -15,9 +15,9 @@ while getopts "h" OPT; do
 	esac
 done
 
-if [ "$#" -ne "0" ]; then
+if [[ $# -gt 1 ]]; then
 	{
-		echo "$(basename $0): unexpected operands"
+		echo "$(basename -- "$0"): unexpected operands"
 		echo
 		echo "$usage"
 	} 1>&2
@@ -25,16 +25,23 @@ if [ "$#" -ne "0" ]; then
 	exit 1
 fi
 
-tmp="$(mktemp)" || exit 1
-trap 'rm "$tmp"' EXIT
+if [[ -n $1 ]]; then
+	file=$1
+else
+	# Only remove the temp file
+	file=$(mktemp) || exit 1
+	trap 'rm -f -- "$file"' EXIT
+fi
 
 # Send stdin, if it exists, to the temp file
-if [ ! -t 0 ]; then
-	cat - > "$tmp"
+if [[ ! -t 0 ]]; then
+	cat - >> "$file"
 fi
 
 # Edit the temp file
-${VISUAL:-${EDITOR:-vim}} "$tmp" < /dev/tty > /dev/tty || exit 1
+${VISUAL:-${EDITOR:-vi}} "$file" < /dev/tty > /dev/tty || exit 1
 
 # Send the temp file to stdout
-cat "$tmp"
+if [[ -f "$file" ]]; then
+	cat "$file"
+fi
