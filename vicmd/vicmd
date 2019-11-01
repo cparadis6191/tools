@@ -52,7 +52,7 @@ for file in "$@"; do
 done
 
 # Edit the cmds
-${VISUAL:-${EDITOR:-vi}} "$cmds" || exit 1
+vipe "$cmds" > /dev/null || exit 1
 
 if [[ ! -s "$cmds" ]]; then
 	{
