@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+usage() {
+	cat <<\EOF
+usage:
+	git quickfix diff
+	git quickfix show
+	git quickfix stash show
+	git diff --patch --no-prefix --relative | git quickfix
+	vim -q <(git quickfix diff --staged)
+	vim -q <(git quickfix stash show)
+	vim -q <(git quickfix show)
+EOF
+}
+
+no_prefix_relative_diff() {
+	local git_command="$1"
+	shift
+	git "$git_command" "$@" --patch --no-prefix --relative
+}
+
+# Adapted from mode_diff() in git-jump
+diff_to_quickfix() {
+	perl -ne '
+	if (m{^\+\+\+ (.*)}) { $file = $1; next }
+	defined($file) or next;
+	if (m/^@@ .*?\+(\d+)/) { $line = $1; next }
+	defined($line) or next;
+	if (/^ /) { $line++; next }
+	if (/^[-+]\s*(.*)/) {
+		print "$file:$line: $1\n";
+		$line = undef;
+	}
+	'
+}
+
+while getopts h OPT; do
+	case $OPT in
+		h)
+			usage
+
+			exit 0
+			;;
+		*)
+			echo "Try 'git quickfix -h' for more information."
+
+			exit 1
+			;;
+	esac
+done
+
+if test $# -gt 0; then
+	no_prefix_relative_diff "$@" | diff_to_quickfix
+else
+	diff_to_quickfix
+fi
