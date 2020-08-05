@@ -5,7 +5,7 @@
 Run the following commands
 
 ```
-$ stow --target="$HOME/.local/bin" git-quickfix vicmd vipe
+$ stow --target="$HOME/.local/bin" git-quickfix qfvim vicmd vipe
 ```
 
 to create symbolic links in the local bin directory to the tools contained in
