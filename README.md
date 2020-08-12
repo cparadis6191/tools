@@ -2,11 +2,9 @@
 
 ## Installation Instructions
 
-Run the following commands
+Run the following command to create symbolic links in the local bin directory
+to the tools contained in this repository:
 
 ```
 $ stow --target="$HOME/.local/bin" git-quickfix qfvim vicmd vipe
 ```
-
-to create symbolic links in the local bin directory to the tools contained in
-this repository.
