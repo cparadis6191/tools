@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 usage="Usage: $(basename -- "$0") FORMAT FILE..."
 
 example="Example: $(basename -- "$0") \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
