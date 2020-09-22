@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 usage="Usage: command | $(basename -- "$0") [FILE] | command"
 
@@ -15,7 +15,7 @@ while getopts h OPT; do
 	esac
 done
 
-if [[ $# -gt 1 ]]; then
+if [ $# -gt 1 ]; then
 	{
 		echo "$(basename -- "$0"): unexpected operands"
 		echo
@@ -25,16 +25,16 @@ if [[ $# -gt 1 ]]; then
 	exit 1
 fi
 
-if [[ -n $1 ]]; then
-	file=$1
+if [ -n "$1" ]; then
+	file="$1"
 else
 	# Only remove the temp file
-	file=$(mktemp) || exit 1
+	file="$(mktemp)" || exit 1
 	trap 'rm -f -- "$file"' EXIT
 fi
 
 # Send stdin, if it exists, to the temp file
-if [[ ! -t 0 ]]; then
+if [ ! -t 0 ]; then
 	cat - >> "$file"
 fi
 
@@ -42,6 +42,6 @@ fi
 ${VISUAL:-${EDITOR:-vi}} "$file" < /dev/tty > /dev/tty || exit 1
 
 # Send the temp file to stdout
-if [[ -f "$file" ]]; then
+if [ -f "$file" ]; then
 	cat "$file"
 fi
