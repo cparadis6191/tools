@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Open quickfix format errors from a command in Vim
 qfvim() {
 	local quickfix
