@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 usage="Usage: command | $(basename -- "$0") [FILE] | command"
 
 while getopts h OPT; do
