@@ -15,11 +15,11 @@ usage:
 EOF
 }
 
-no_prefix_relative_diff() {
-	local git_command="$1"
+no_prefix_relative_diff() (
+	git_command="$1"
 	shift
 	git "$git_command" "$@" --patch --no-prefix --relative
-}
+)
 
 # Adapted from mode_diff() in git-jump
 diff_to_quickfix() {
