@@ -6,6 +6,7 @@ usage() {
 	cat <<\EOF
 usage:
 	git quickfix diff
+	git quickfix diffref
 	git quickfix show
 	git quickfix stash show
 	git diff --patch --no-prefix --relative | git quickfix
@@ -16,9 +17,29 @@ EOF
 }
 
 no_prefix_relative_diff() (
+	# Split command and required args from remaining args
 	git_command="$1"
 	shift
-	git "$git_command" "$@" --patch --no-prefix --relative
+
+	case "$git_command" in
+		diffref) # [<ref_spec>]
+			required_args="${1:-1}"
+			if [ $# -gt 0 ]; then
+				shift
+			fi
+			;;
+		stash) # show
+			required_args="$1"
+			shift
+			;;
+	esac
+
+	# Put remaining args at the end to support commits and paths
+	if [ "$required_args" = '' ]; then
+		git "$git_command" --patch --no-prefix --relative "$@"
+	else
+		git "$git_command" "$required_args" --patch --no-prefix --relative "$@"
+	fi
 )
 
 # Adapted from mode_diff() in git-jump
