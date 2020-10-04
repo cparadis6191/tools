@@ -47,7 +47,7 @@ if [[ "$format" != *%f* ]]; then
 fi
 
 cmds=$(mktemp) || exit 1
-trap 'rm -f -- "$cmds"' EXIT
+trap 'rm --force -- "$cmds"' EXIT
 
 for file in "$@"; do
 	echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"

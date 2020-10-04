@@ -17,28 +17,28 @@ EOF
 }
 
 no_prefix_relative_diff() (
-	# Split command and required args from remaining args
+	# Split command and required options from remaining options
 	git_command="$1"
 	shift
 
 	case "$git_command" in
 		diffref) # [<ref_spec>]
-			required_args="${1:-1}"
+			required_options="${1:-1}"
 			if [ $# -gt 0 ]; then
 				shift
 			fi
 			;;
 		stash) # show
-			required_args="$1"
+			required_options="$1"
 			shift
 			;;
 	esac
 
-	# Put remaining args at the end to support commits and paths
-	if [ "$required_args" = '' ]; then
+	# Put remaining options at the end to support commits and paths
+	if [ "$required_options" = '' ]; then
 		git "$git_command" --patch --no-prefix --relative "$@"
 	else
-		git "$git_command" "$required_args" --patch --no-prefix --relative "$@"
+		git "$git_command" "$required_options" --patch --no-prefix --relative "$@"
 	fi
 )
 
@@ -72,7 +72,7 @@ while getopts h OPT; do
 	esac
 done
 
-if test $# -gt 0; then
+if [ $# -gt 0 ]; then
 	no_prefix_relative_diff "$@" | diff_to_quickfix
 else
 	diff_to_quickfix

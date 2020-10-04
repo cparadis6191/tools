@@ -27,12 +27,12 @@ if [ $# -gt 1 ]; then
 	exit 1
 fi
 
-if [ -n "$1" ]; then
+if [ "$1" != '' ]; then
 	file="$1"
 else
 	# Only remove the temp file
 	file="$(mktemp)" || exit 1
-	trap 'rm -f -- "$file"' EXIT
+	trap 'rm --force -- "$file"' EXIT
 fi
 
 # Send stdin, if it exists, to the temp file
