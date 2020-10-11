@@ -3,9 +3,9 @@
 set -e
 
 usage() {
-	cat <<\EOF
-usage:
-	git rmhooks
+	cat <<EOF
+Usage:
+	$(basename -- "$0")
 EOF
 }
 
@@ -29,7 +29,7 @@ while getopts h OPT; do
 			exit 0
 			;;
 		*)
-			echo "Try 'git rmhooks -h' for more information."
+			echo "Try '$(basename -- "$0") -h' for more information."
 
 			exit 1
 			;;

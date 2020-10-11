@@ -3,16 +3,16 @@
 set -e
 
 usage() {
-	cat <<\EOF
-usage:
-	git quickfix diff
-	git quickfix diffref
-	git quickfix show
-	git quickfix stash show
-	git diff --patch --no-prefix --relative | git quickfix
-	vim -q <(git quickfix diff --staged)
-	vim -q <(git quickfix stash show)
-	vim -q <(git quickfix show)
+	cat <<EOF
+Usage:
+	$(basename -- "$0") diff
+	$(basename -- "$0") diffref
+	$(basename -- "$0") show
+	$(basename -- "$0") stash show
+	git diff --patch --no-prefix --relative | $(basename -- "$0")
+	vim -q <($(basename -- "$0") diff --staged)
+	vim -q <($(basename -- "$0") stash show)
+	vim -q <($(basename -- "$0") show)
 EOF
 }
 
@@ -65,7 +65,7 @@ while getopts h OPT; do
 			exit 0
 			;;
 		*)
-			echo "Try 'git quickfix -h' for more information."
+			echo "Try '$(basename -- "$0") -h' for more information."
 
 			exit 1
 			;;

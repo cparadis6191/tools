@@ -2,20 +2,26 @@
 
 set -e
 
-usage="Usage: $(basename -- "$0") FORMAT FILE..."
+usage() {
+	cat <<EOF
+Usage:
+	$(basename -- "$0") FORMAT FILE...
 
-example="Example: $(basename -- "$0") \"mv %f %f.bak\" foo.txt bar.txt buzz.txt"
+Example:
+	$(basename -- "$0") \"mv %f %f.bak\" foo.txt bar.txt buzz.txt
+EOF
+}
 
 while getopts h OPT; do
 	case $OPT in
 		h)
-			echo "$usage"
-			echo
-			echo "$example"
+			usage
 
 			exit 0
 			;;
 		*)
+			echo "Try '$(basename -- "$0") -h' for more information."
+
 			exit 1
 			;;
 	esac
@@ -23,11 +29,8 @@ done
 
 if [[ $# -lt 2 ]]; then
 	{
-		echo "$(basename -- "$0"): missing operands"
-		echo
-		echo "$usage"
-		echo
-		echo "$example"
+		echo "$(basename -- "$0"): Missing operands"
+		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
 	exit 1
@@ -38,9 +41,8 @@ shift
 
 if [[ "$format" != *%f* ]]; then
 	{
-		echo 'Format missing "%f"'
-		echo
-		echo "$example"
+		echo "$(basename -- "$0") Format missing \"%f\""
+		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
 	exit 1
@@ -58,7 +60,8 @@ vipe "$cmds" > /dev/null || exit 1
 
 if [[ ! -s "$cmds" ]]; then
 	{
-		echo 'No cmds to run'
+		echo "$(basename -- "$0"): No cmds to run"
+		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
 	exit 1

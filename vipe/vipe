@@ -2,16 +2,24 @@
 
 set -e
 
-usage="Usage: command | $(basename -- "$0") [FILE] | command"
+usage() {
+	cat <<EOF
+Usage:
+	$(basename -- "$0") [FILE] | command
+	command | $(basename -- "$0") [FILE] | command
+EOF
+}
 
 while getopts h OPT; do
 	case $OPT in
 		h)
-			echo "$usage"
+			usage
 
 			exit 0
 			;;
 		*)
+			echo "Try '$(basename -- "$0") -h' for more information."
+
 			exit 1
 			;;
 	esac
@@ -19,9 +27,8 @@ done
 
 if [ $# -gt 1 ]; then
 	{
-		echo "$(basename -- "$0"): unexpected operands"
-		echo
-		echo "$usage"
+		echo "$(basename -- "$0"): Unexpected operands."
+		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
 	exit 1
