@@ -68,4 +68,6 @@ if [[ ! -s "$cmds" ]]; then
 fi
 
 # Run the cmds
-source "$cmds"
+if [ -f "$cmds" ]; then
+	source "$cmds"
+fi
