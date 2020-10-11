@@ -73,7 +73,10 @@ while getopts h OPT; do
 done
 
 if [ $# -gt 0 ]; then
-	no_prefix_relative_diff "$@" | diff_to_quickfix
+	(
+		git_diff="$(no_prefix_relative_diff "$@")"
+		echo "$git_diff" | diff_to_quickfix
+	)
 else
 	diff_to_quickfix
 fi
