@@ -2,16 +2,45 @@
 
 set -e
 
+usage() {
+	cat <<EOF
+Usage:
+	$(basename -- "$0") <command> [<args>]
+	$(basename -- "$0") git quickfix diff
+	$(basename -- "$0") git quickfix diffref
+	$(basename -- "$0") git quickfix show
+	$(basename -- "$0") git quickfix stash show
+EOF
+}
+
 # Open quickfix format errors from a command in Vim
 qfvim() {
 	local quickfix
 	quickfix="$("$@")"
 
 	if [[ "$quickfix" = '' ]]; then
+		echo "$(basename -- "$0"): Expected command"
+		echo "Try '$(basename -- "$0") -h' for more information."
+
 		exit 1
 	fi
 
 	vim -q <(echo "$quickfix")
 }
+
+while getopts h OPT; do
+	case $OPT in
+		h)
+			usage
+
+			exit 0
+			;;
+		*)
+			echo "Try '$(basename -- "$0") -h' for more information."
+
+			exit 1
+			;;
+	esac
+done
 
 qfvim "$@"
