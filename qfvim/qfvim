@@ -45,4 +45,13 @@ while getopts h OPT; do
 	esac
 done
 
+if [ $# -eq 0 ]; then
+	{
+		echo "$(basename -- "$0"): Expected command"
+		echo "Try '$(basename -- "$0") -h' for more information."
+	} 1>&2
+
+	exit 1
+fi
+
 qfvim "$@"
