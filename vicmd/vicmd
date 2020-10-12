@@ -20,7 +20,9 @@ while getopts h OPT; do
 			exit 0
 			;;
 		*)
-			echo "Try '$(basename -- "$0") -h' for more information."
+			{
+				echo "Try '$(basename -- "$0") -h' for more information."
+			} 1>&2
 
 			exit 1
 			;;
