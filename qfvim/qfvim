@@ -19,8 +19,10 @@ qfvim() {
 	quickfix="$("$@")"
 
 	if [[ "$quickfix" = '' ]]; then
-		echo "$(basename -- "$0"): Expected command"
-		echo "Try '$(basename -- "$0") -h' for more information."
+		{
+			echo "$(basename -- "$0"): Empty quickfix"
+			echo "Try '$(basename -- "$0") -h' for more information."
+		} 1>&2
 
 		exit 1
 	fi
