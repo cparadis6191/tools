@@ -50,7 +50,7 @@ if [[ "$format" != *%f* ]]; then
 	exit 1
 fi
 
-cmds=$(mktemp) || exit 1
+cmds="$(mktemp)" || exit 1
 trap 'rm --force -- "$cmds"' EXIT
 
 for file in "$@"; do
