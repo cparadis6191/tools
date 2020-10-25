@@ -10,6 +10,29 @@ Usage:
 EOF
 }
 
+vipe() (
+	if [ "$1" != '' ]; then
+		file="$1"
+	else
+		# Only remove the temp file
+		file="$(mktemp)" || exit 1
+		trap 'rm --force -- "$file"' EXIT
+	fi
+
+	# Send stdin, if it exists, to the temp file
+	if [ ! -t 0 ]; then
+		cat - >> "$file"
+	fi
+
+	# Edit the temp file
+	${VISUAL:-${EDITOR:-vi}} "$file" < /dev/tty > /dev/tty || exit 1
+
+	# Send the temp file to stdout
+	if [ -f "$file" ]; then
+		cat "$file"
+	fi
+)
+
 while getopts h OPT; do
 	case $OPT in
 		h)
@@ -36,23 +59,4 @@ if [ $# -gt 1 ]; then
 	exit 1
 fi
 
-if [ "$1" != '' ]; then
-	file="$1"
-else
-	# Only remove the temp file
-	file="$(mktemp)" || exit 1
-	trap 'rm --force -- "$file"' EXIT
-fi
-
-# Send stdin, if it exists, to the temp file
-if [ ! -t 0 ]; then
-	cat - >> "$file"
-fi
-
-# Edit the temp file
-${VISUAL:-${EDITOR:-vi}} "$file" < /dev/tty > /dev/tty || exit 1
-
-# Send the temp file to stdout
-if [ -f "$file" ]; then
-	cat "$file"
-fi
+vipe "$@"
