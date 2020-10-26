@@ -12,6 +12,46 @@ Example:
 EOF
 }
 
+vicmd() {
+	local format
+	format="$1"
+	shift
+
+	if [[ "$format" != *%f* ]]; then
+		{
+			echo "$(basename -- "$0"): Format missing \"%f\""
+			echo "Try '$(basename -- "$0") -h' for more information."
+		} 1>&2
+
+		exit 1
+	fi
+
+	local cmds
+	cmds="$(mktemp)" || exit 1
+	trap 'rm --force -- "$cmds"' EXIT
+
+	for file in "$@"; do
+		echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"
+	done
+
+	# Edit the cmds
+	vipe "$cmds" > /dev/null || exit 1
+
+	if [[ ! -s "$cmds" ]]; then
+		{
+			echo "$(basename -- "$0"): No cmds to run"
+			echo "Try '$(basename -- "$0") -h' for more information."
+		} 1>&2
+
+		exit 1
+	fi
+
+	# Run the cmds
+	if [ -f "$cmds" ]; then
+		source "$cmds"
+	fi
+}
+
 while getopts h OPT; do
 	case $OPT in
 		h)
@@ -38,38 +78,4 @@ if [[ $# -lt 2 ]]; then
 	exit 1
 fi
 
-format="$1"
-shift
-
-if [[ "$format" != *%f* ]]; then
-	{
-		echo "$(basename -- "$0"): Format missing \"%f\""
-		echo "Try '$(basename -- "$0") -h' for more information."
-	} 1>&2
-
-	exit 1
-fi
-
-cmds="$(mktemp)" || exit 1
-trap 'rm --force -- "$cmds"' EXIT
-
-for file in "$@"; do
-	echo "${format//%f/\'${file//\'/\'\\\'\'}\'}" >> "$cmds"
-done
-
-# Edit the cmds
-vipe "$cmds" > /dev/null || exit 1
-
-if [[ ! -s "$cmds" ]]; then
-	{
-		echo "$(basename -- "$0"): No cmds to run"
-		echo "Try '$(basename -- "$0") -h' for more information."
-	} 1>&2
-
-	exit 1
-fi
-
-# Run the cmds
-if [ -f "$cmds" ]; then
-	source "$cmds"
-fi
+vicmd "$@"
