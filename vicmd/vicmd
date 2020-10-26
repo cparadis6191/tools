@@ -43,7 +43,7 @@ shift
 
 if [[ "$format" != *%f* ]]; then
 	{
-		echo "$(basename -- "$0") Format missing \"%f\""
+		echo "$(basename -- "$0"): Format missing \"%f\""
 		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
