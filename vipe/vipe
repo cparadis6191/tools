@@ -52,7 +52,7 @@ done
 
 if [ $# -gt 1 ]; then
 	{
-		echo "$(basename -- "$0"): Unexpected operands."
+		echo "$(basename -- "$0"): Unexpected operands"
 		echo "Try '$(basename -- "$0") -h' for more information."
 	} 1>&2
 
