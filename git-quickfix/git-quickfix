@@ -7,6 +7,7 @@ usage() {
 Usage:
 	$(basename -- "$0") diff
 	$(basename -- "$0") diffref
+	$(basename -- "$0") grep
 	$(basename -- "$0") show
 	$(basename -- "$0") stash show
 	git diff --patch --no-prefix --relative | $(basename -- "$0")
@@ -28,6 +29,14 @@ diff_to_quickfix() {
 		print "$file:$line: $1\n";
 		$line = undef;
 	}
+	'
+}
+
+# Adapted from mode_grep() in git-jump
+grep_to_quickfix() {
+	perl -pe '
+	s/[ \t]+/ /g;
+	s/^ *//;
 	'
 }
 
@@ -62,6 +71,10 @@ if [ $# -gt 0 ]; then
 				fi
 				options="$required_options --patch --no-prefix --relative"
 				to_quickfix='diff_to_quickfix'
+				;;
+			grep)
+				options="--column --line-number"
+				to_quickfix='grep_to_quickfix'
 				;;
 			stash) # show
 				required_options="$1"
