@@ -5,6 +5,7 @@ set -e
 usage() {
 	cat <<EOF
 Usage:
+	$(basename -- "$0") check
 	$(basename -- "$0") diff
 	$(basename -- "$0") diffref
 	$(basename -- "$0") grep
@@ -88,13 +89,22 @@ if [ $# -gt 0 ]; then
 				options="$required_options --patch --no-prefix --relative"
 				to_quickfix='diff_to_quickfix'
 				;;
+			check)
+				git_command='diff'
+				options='--check --patch --no-prefix --relative'
+				ignore_exit_status=true
+				;;
 			*)
 				options='--patch --no-prefix --relative'
 				to_quickfix='diff_to_quickfix'
 				;;
 		esac
 
-		git_diff="$(git "$git_command" $options "$@")"
+		if [ "$ignore_exit_status" ]; then
+			git_diff="$(git "$git_command" $options "$@" || true)"
+		else
+			git_diff="$(git "$git_command" $options "$@")"
+		fi
 
 		if [ "$to_quickfix" = '' ]; then
 			echo "$git_diff"
