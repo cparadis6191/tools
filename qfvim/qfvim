@@ -16,7 +16,7 @@ EOF
 # Open quickfix format errors from a command in Vim
 qfvim() {
 	local quickfix
-	quickfix="$("$@")"
+	quickfix="$("$@" || true)"
 
 	if [[ "$quickfix" = '' ]]; then
 		{
