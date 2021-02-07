@@ -16,32 +16,6 @@ Usage:
 EOF
 }
 
-no_prefix_relative_diff() (
-	# Split command and required options from remaining options
-	git_command="$1"
-	shift
-
-	case "$git_command" in
-		diffref) # [<ref_spec>]
-			required_options="${1:-1}"
-			if [ $# -gt 0 ]; then
-				shift
-			fi
-			;;
-		stash) # show
-			required_options="$1"
-			shift
-			;;
-	esac
-
-	# Put remaining options at the end to support commits and paths
-	if [ "$required_options" = '' ]; then
-		git "$git_command" --patch --no-prefix --relative "$@"
-	else
-		git "$git_command" "$required_options" --patch --no-prefix --relative "$@"
-	fi
-)
-
 # Adapted from mode_diff() in git-jump
 diff_to_quickfix() {
 	perl -ne '
@@ -76,8 +50,38 @@ done
 
 if [ $# -gt 0 ]; then
 	(
-		git_diff="$(no_prefix_relative_diff "$@")"
-		echo "$git_diff" | diff_to_quickfix
+		# Split command and required options from remaining options
+		git_command="$1"
+		shift
+
+		case "$git_command" in
+			diffref) # [<ref_spec>]
+				required_options="${1:-1}"
+				if [ $# -gt 0 ]; then
+					shift
+				fi
+				options="$required_options --patch --no-prefix --relative"
+				to_quickfix='diff_to_quickfix'
+				;;
+			stash) # show
+				required_options="$1"
+				shift
+				options="$required_options --patch --no-prefix --relative"
+				to_quickfix='diff_to_quickfix'
+				;;
+			*)
+				options='--patch --no-prefix --relative'
+				to_quickfix='diff_to_quickfix'
+				;;
+		esac
+
+		git_diff="$(git "$git_command" $options "$@")"
+
+		if [ "$to_quickfix" = '' ]; then
+			echo "$git_diff"
+		else
+			echo "$git_diff" | "$to_quickfix"
+		fi
 	)
 else
 	diff_to_quickfix
