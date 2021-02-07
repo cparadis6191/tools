@@ -8,6 +8,7 @@ Usage:
 	$(basename -- "$0") diff
 	$(basename -- "$0") diffref
 	$(basename -- "$0") grep
+	$(basename -- "$0") conflict
 	$(basename -- "$0") show
 	$(basename -- "$0") stash show
 	git diff --patch --no-prefix --relative | $(basename -- "$0")
@@ -74,6 +75,11 @@ if [ $# -gt 0 ]; then
 				;;
 			grep)
 				options="--column --line-number"
+				to_quickfix='grep_to_quickfix'
+				;;
+			conflict)
+				git_command='grep'
+				options='--column --line-number --extended-regexp ^[<|=>]{7}'
 				to_quickfix='grep_to_quickfix'
 				;;
 			stash) # show
