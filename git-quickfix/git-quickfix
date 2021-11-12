@@ -120,9 +120,9 @@ if [ $# -gt 0 ]; then
 		fi
 
 		if [ "$to_quickfix" = '' ]; then
-			echo "$git_diff"
+			echo -n "$git_diff"
 		else
-			echo "$git_diff" | "$to_quickfix"
+			echo -n "$git_diff" | "$to_quickfix"
 		fi
 	)
 else
