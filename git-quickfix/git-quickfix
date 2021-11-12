@@ -63,10 +63,10 @@ done
 if [ $# -gt 0 ]; then
 	(
 		# Split command and required options from remaining options
-		git_command="$1"
+		command="$1"
 		shift
 
-		case "$git_command" in
+		case "$command" in
 			diff)
 				case "$@" in
 					--check)
@@ -92,7 +92,7 @@ if [ $# -gt 0 ]; then
 				to_quickfix='grep_to_quickfix'
 				;;
 			conflict)
-				git_command='grep'
+				command='grep'
 				options='--column --line-number --extended-regexp ^[<|=>]{7}'
 				to_quickfix='grep_to_quickfix'
 				;;
@@ -103,7 +103,7 @@ if [ $# -gt 0 ]; then
 				to_quickfix='diff_to_quickfix'
 				;;
 			check)
-				git_command='diff'
+				command='diff'
 				options='--check --patch --no-prefix --relative'
 				ignore_exit_status=true
 				;;
@@ -114,9 +114,9 @@ if [ $# -gt 0 ]; then
 		esac
 
 		if [ "$ignore_exit_status" ]; then
-			git_diff="$(git "$git_command" $options "$@" || true)"
+			git_diff="$(git "$command" $options "$@" || true)"
 		else
-			git_diff="$(git "$git_command" $options "$@")"
+			git_diff="$(git "$command" $options "$@")"
 		fi
 
 		if [ "$to_quickfix" = '' ]; then
