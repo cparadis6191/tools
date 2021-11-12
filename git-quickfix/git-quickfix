@@ -96,7 +96,7 @@ if [ $# -gt 0 ]; then
 				options='--column --line-number --extended-regexp ^[<|=>]{7}'
 				to_quickfix='grep_to_quickfix'
 				;;
-			stash) # show
+			stash)
 				required_options="$1"
 				shift
 				options="$required_options --patch --no-prefix --relative"
