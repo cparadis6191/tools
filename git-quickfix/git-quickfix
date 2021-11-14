@@ -71,7 +71,7 @@ if [ $# -gt 0 ]; then
 				case "$@" in
 					--check)
 						options='--patch --no-prefix --relative'
-						ignore_exit_status=true
+						ignore_exit_status='true'
 						;;
 					*)
 						options='--patch --no-prefix --relative'
@@ -105,7 +105,7 @@ if [ $# -gt 0 ]; then
 			check)
 				command='diff'
 				options='--check --patch --no-prefix --relative'
-				ignore_exit_status=true
+				ignore_exit_status='true'
 				;;
 			*)
 				options='--patch --no-prefix --relative'
