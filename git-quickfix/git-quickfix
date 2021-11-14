@@ -119,10 +119,10 @@ if [ $# -gt 0 ]; then
 			git_diff="$(git "$command" $options "$@")"
 		fi
 
-		if [ "$to_quickfix" = '' ]; then
-			echo -n "$git_diff"
-		else
+		if [ "$to_quickfix" ]; then
 			echo -n "$git_diff" | "$to_quickfix"
+		else
+			echo -n "$git_diff"
 		fi
 	)
 else
