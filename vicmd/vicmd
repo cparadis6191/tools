@@ -3,13 +3,13 @@
 set -e
 
 usage() {
-	cat <<EOF
+	cat <<HEREDOC
 Usage:
 	$(basename -- "$0") FORMAT FILE...
 
 Example:
 	$(basename -- "$0") \"mv %f %f.bak\" foo.txt bar.txt buzz.txt
-EOF
+HEREDOC
 }
 
 vicmd() {

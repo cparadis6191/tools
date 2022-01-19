@@ -3,7 +3,7 @@
 set -e
 
 usage() {
-	cat <<EOF
+	cat <<HEREDOC
 Usage:
 	$(basename -- "$0") check
 	$(basename -- "$0") diff
@@ -17,7 +17,7 @@ Usage:
 	vim -q <($(basename -- "$0") diff --staged)
 	vim -q <($(basename -- "$0") stash show)
 	vim -q <($(basename -- "$0") show)
-EOF
+HEREDOC
 }
 
 # Adapted from mode_diff() in git-jump

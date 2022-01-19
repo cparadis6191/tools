@@ -3,11 +3,11 @@
 set -e
 
 usage() {
-	cat <<EOF
+	cat <<HEREDOC
 Usage:
 	$(basename -- "$0") [FILE] | command
 	command | $(basename -- "$0") [FILE] | command
-EOF
+HEREDOC
 }
 
 vipe() (

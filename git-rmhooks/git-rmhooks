@@ -3,10 +3,10 @@
 set -e
 
 usage() {
-	cat <<EOF
+	cat <<HEREDOC
 Usage:
 	$(basename -- "$0")
-EOF
+HEREDOC
 }
 
 rmhooks() (
