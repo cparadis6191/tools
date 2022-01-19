@@ -33,8 +33,8 @@ vipe() (
 	fi
 )
 
-while getopts h OPT; do
-	case $OPT in
+while getopts h opt; do
+	case $opt in
 		h)
 			usage
 
