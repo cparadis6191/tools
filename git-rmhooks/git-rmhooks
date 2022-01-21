@@ -10,7 +10,7 @@ HEREDOC
 }
 
 rmhooks() (
-	hooks="$(echo "$(eval echo "$(git config --global --get init.templatedir)")"/hooks/*)"
+	hooks="$(eval echo "$(git config --global --get init.templatedir)/hooks/*")"
 	timestamp="$(date +%s)"
 
 	for hook in $hooks; do
