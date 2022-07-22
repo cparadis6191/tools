@@ -25,7 +25,7 @@ vipe() (
 	fi
 
 	# Edit the temp file
-	${VISUAL:-${EDITOR:-vi}} "$file" < /dev/tty > /dev/tty || exit 1
+	${VISUAL:-${EDITOR:-vi}} -c 'set nofixendofline' "$file" < /dev/tty > /dev/tty || exit 1
 
 	# Send the temp file to stdout
 	if [ -f "$file" ]; then
