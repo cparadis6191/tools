@@ -3,7 +3,7 @@
 set -e
 
 usage() {
-	cat <<HEREDOC
+	cat << HEREDOC
 Usage:
 	$(basename -- "$0") <command> [<args>]
 	$(basename -- "$0") git quickfix diff
