@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -e
+
+usage() {
+	cat << EOF
+Usage:
+	$(basename -- "$0") fzfixup [<commit>]
+	$(basename -- "$0") fzfixup
+	$(basename -- "$0") fzfixup deadbee
+EOF
+}
+
+fzfixup() {
+	files_from_head="$(git diff-tree --no-commit-id --name-only -r "$@")"
+	commits_to_fixup="$(git log --color=always --date=short \
+		--format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" HEAD~ -- "$files_from_head")"
+
+	if [ -z "$commits_to_fixup" ]; then
+		{
+			echo "No commits to fixup."
+
+			exit 1
+		} 1>&2
+	fi
+
+	commit_to_fixup="$(echo "$commits_to_fixup" |
+		fzf --preview='grep --only-matching "[a-f0-9]\{7,\}" <<< {} | \
+		xargs git show --color=always' | grep --only-matching "[a-f0-9]\{7,\}")"
+
+	if [ -z "$commit_to_fixup" ]; then
+		{
+			echo "No commit to fixup."
+
+			exit 2
+		} 1>&2
+	fi
+
+	git commit --amend --fixup="$commit_to_fixup"
+}
+
+while getopts h OPT; do
+	case $OPT in
+		h)
+			usage
+
+			exit 0
+			;;
+		*)
+			{
+				echo "Try '$(basename -- "$0") -h' for more information."
+			} 1>&2
+
+			exit 3
+			;;
+	esac
+done
+
+if [ $# -gt 1 ]; then
+	(
+		{
+			echo "Try '$(basename -- "$0") -h' for more information."
+		} 1>&2
+
+		exit 4
+	)
+else
+	fzfixup "${@:-HEAD}"
+fi
