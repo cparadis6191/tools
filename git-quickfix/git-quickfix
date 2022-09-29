@@ -74,7 +74,7 @@ if [ $# -gt 0 ]; then
 						ignore_exit_status='true'
 						;;
 					*)
-						options='--patch --no-prefix --relative'
+						options='--irreversible-delete --patch --no-prefix --no-renames --relative'
 						to_quickfix='diff_to_quickfix'
 						;;
 				esac
@@ -84,7 +84,7 @@ if [ $# -gt 0 ]; then
 				if [ $# -gt 0 ]; then
 					shift
 				fi
-				options="$required_options --patch --no-prefix --relative"
+				options="$required_options --irreversible-delete --patch --no-prefix --no-renames --relative"
 				to_quickfix='diff_to_quickfix'
 				;;
 			grep)
@@ -99,7 +99,7 @@ if [ $# -gt 0 ]; then
 			stash)
 				required_options="$1"
 				shift
-				options="$required_options --patch --no-prefix --relative"
+				options="$required_options --irreversible-delete --patch --no-prefix --no-renames --relative"
 				to_quickfix='diff_to_quickfix'
 				;;
 			check)
@@ -108,7 +108,7 @@ if [ $# -gt 0 ]; then
 				ignore_exit_status='true'
 				;;
 			*)
-				options='--patch --no-prefix --relative'
+				options='--irreversible-delete --patch --no-prefix --no-renames --relative'
 				to_quickfix='diff_to_quickfix'
 				;;
 		esac
