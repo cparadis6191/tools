@@ -88,7 +88,7 @@ if [ $# -gt 0 ]; then
 				to_quickfix='diff_to_quickfix'
 				;;
 			grep)
-				options="--column --line-number"
+				options='--column --line-number'
 				to_quickfix='grep_to_quickfix'
 				;;
 			conflict)
