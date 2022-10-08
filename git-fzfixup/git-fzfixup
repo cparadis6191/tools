@@ -19,9 +19,9 @@ fzfixup() {
 	if [ -z "$commits_to_fixup" ]; then
 		{
 			echo "No commits to fixup."
-
-			exit 1
 		} 1>&2
+
+		exit 1
 	fi
 
 	commit_to_fixup="$(echo "$commits_to_fixup" |
@@ -32,9 +32,9 @@ fzfixup() {
 	if [ -z "$commit_to_fixup" ]; then
 		{
 			echo "No commit to fixup."
-
-			exit 2
 		} 1>&2
+
+		exit 2
 	fi
 
 	git commit --amend --fixup="$commit_to_fixup"
