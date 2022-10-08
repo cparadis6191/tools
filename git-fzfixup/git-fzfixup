@@ -12,9 +12,9 @@ EOF
 }
 
 fzfixup() {
-	files_from_head="$(git diff-tree --no-commit-id --name-only -r "$@")"
+	files_from_commit="$(git diff-tree --no-commit-id --name-only -r "$@")"
 	commits_to_fixup="$(git log --color=always --date=short \
-		--format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" HEAD~ -- $files_from_head)"
+		--format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" "$@~" -- $files_from_commit)"
 
 	if [ -z "$commits_to_fixup" ]; then
 		{
