@@ -24,10 +24,12 @@ fzfixup() {
 		exit 1
 	fi
 
+	preview="git diff-tree --no-commit-id --name-only -r \"\$(echo {} |
+		grep --only-matching '[a-f0-9]\{7,\}')\" |
+		grep --color=always --regexp='$files_from_commit\|\$'"
 	commit_to_fixup="$(echo "$commits_to_fixup" |
-		fzf --preview='git diff-tree --no-commit-id --name-only -r "$(echo "{}" | \
-		grep --only-matching "[a-f0-9]\{7,\}")"' |
-		grep --only-matching "[a-f0-9]\{7,\}")"
+		fzf --preview="$preview" |
+		grep --only-matching '[a-f0-9]\{7,\}')"
 
 	if [ -z "$commit_to_fixup" ]; then
 		{
