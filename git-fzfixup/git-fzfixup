@@ -59,7 +59,7 @@ while getopts h OPT; do
 	esac
 done
 
-if [ $# -gt 1 ]; then
+if [ $# -gt 0 ]; then
 	(
 		{
 			echo "Try '$(basename -- "$0") -h' for more information."
