@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -e
+
+usage() {
+	cat << HEREDOC
+Usage:
+	command | $(basename -- "$0")
+
+Redirect standard input to yeet-impl and add it to the clipboard history file.
+
+Set \$FZ_CLIPBOARD_HISTORY_FILE to specify the clipboard history file. The one
+currently in use is:
+	"${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
+HEREDOC
+}
+
+yeet() {
+	local fz_clipboard_history_file="${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
+
+	local text="$(cat -)"
+
+	echo -n "$text" | yeet-impl
+	echo -en "$text\0" >> "$fz_clipboard_history_file"
+}
+
+while getopts h opt; do
+	case $opt in
+		h)
+			usage
+
+			exit 0
+			;;
+		*)
+			{
+				echo "Try '$(basename -- "$0") -h' for more information."
+			} 1>&2
+
+			exit 1
+			;;
+	esac
+done
+
+if [ $# -ne 0 ]; then
+	{
+		echo "$(basename -- "$0"): Unexpected operands"
+		echo "Try '$(basename -- "$0") -h' for more information."
+	} 1>&2
+
+	exit 1
+fi
+
+yeet
