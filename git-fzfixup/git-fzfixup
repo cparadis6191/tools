@@ -8,6 +8,8 @@ Usage:
 	$(basename -- "$0") fzfixup [<commit>]
 	$(basename -- "$0") fzfixup
 	$(basename -- "$0") fzfixup deadbee
+
+Fuzzy find a commit to fixup with HEAD based on the contents of HEAD.
 EOF
 }
 
