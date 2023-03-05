@@ -5,7 +5,7 @@ set -e
 usage() {
 	cat << EOF
 Usage:
-	$(basename -- "$0") fzfixup
+	$(basename -- "$0")
 
 Fuzzy find a commit to fixup with HEAD based on the contents of HEAD.
 EOF
