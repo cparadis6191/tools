@@ -6,6 +6,7 @@ usage() {
 	cat << HEREDOC
 Usage:
 	$(basename -- "$0")
+	$(basename -- "$0") [FILE]
 
 Fuzzy find text from the clipboard history file and edit it.
 
