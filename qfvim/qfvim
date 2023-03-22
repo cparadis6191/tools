@@ -27,7 +27,7 @@ qfvim() {
 		exit 1
 	fi
 
-	${VISUAL:-${EDITOR:-vi}} -q <(echo "$quickfix")
+	${EDITOR:-vi} -q <(echo "$quickfix")
 }
 
 while getopts h opt; do
