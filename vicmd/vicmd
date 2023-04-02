@@ -35,7 +35,7 @@ vicmd() {
 	done
 
 	# Edit the cmds
-	vipe "$cmds" > /dev/null || exit 1
+	${EDITOR:-vim} "$cmds" || exit 1
 
 	if [[ ! -s "$cmds" ]]; then
 		{
