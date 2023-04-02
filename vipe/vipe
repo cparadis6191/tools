@@ -28,9 +28,7 @@ vipe() (
 	${EDITOR:-vim} -c 'set nofixendofline' "$file" < /dev/tty > /dev/tty || exit 1
 
 	# Send the temp file to stdout
-	if [ -f "$file" ]; then
-		cat "$file"
-	fi
+	cat "$file"
 )
 
 while getopts h opt; do
