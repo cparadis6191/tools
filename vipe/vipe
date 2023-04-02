@@ -16,7 +16,7 @@ vipe() (
 	else
 		# Only remove the temp file
 		file="$(mktemp)" || exit 1
-		trap 'rm --force -- "$file"' EXIT
+		trap "rm --force -- '$file'" EXIT
 	fi
 
 	# Send stdin, if it exists, to the temp file
