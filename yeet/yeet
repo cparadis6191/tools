@@ -18,7 +18,8 @@ HEREDOC
 yeet() {
 	local fz_clipboard_history_file="${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
 
-	local text="$(cat -)"
+	local text
+	text="$(cat -)"
 
 	echo -n "$text" | yeet-impl
 	echo -en "$text\0" >> "$fz_clipboard_history_file"
