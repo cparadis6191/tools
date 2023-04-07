@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eEu -o pipefail
 
 usage() {
 	cat << HEREDOC
@@ -27,7 +27,7 @@ vicmd() {
 	fi
 
 	local cmds
-	cmds="$(mktemp)" || exit 1
+	cmds="$(mktemp)"
 	trap "rm --force -- '$cmds'" EXIT
 
 	for file in "$@"; do
@@ -35,7 +35,7 @@ vicmd() {
 	done
 
 	# Edit the cmds
-	${EDITOR:-vim} "$cmds" || exit 1
+	${EDITOR:-vim} "$cmds"
 
 	if [[ ! -s "$cmds" ]]; then
 		{
