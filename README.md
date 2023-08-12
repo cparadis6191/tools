@@ -8,5 +8,5 @@ repository:
 
 ```
 $ python3 -m pip install --requirement requirements.txt
-$ stow --target="$HOME/.local/bin" fzl fzyedit fzyoink git-fzfixup git-quickfix git-rmhooks mktodos qfvim vicmd vipe yeet
+$ stow --target="$HOME/.local/bin" fzl fzyedit fzyoink git-fzfixup git-quickfix git-rmhooks mkjournals qfvim vicmd vipe yeet
 ```

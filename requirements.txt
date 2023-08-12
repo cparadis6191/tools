@@ -1,1 +1,1 @@
---requirement mktodos/requirements.txt
+--requirement mkjournals/requirements.txt
