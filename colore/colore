@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+# PYTHON_ARGCOMPLETE_OK
+
+
+import argparse
+import colorama
+import re
+import sys
+
+_HAS_ARGCOMPLETE = True
+
+try:
+    import argcomplete
+except ImportError:
+    _HAS_ARGCOMPLETE = False
+
+
+def parse_args():
+    def get_format_choices(format_type):
+        return [choice.lower() for choice in dir(format_type) if choice.isupper()]
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument("-b", "--back", choices=(get_format_choices(colorama.Back)))
+    argparser.add_argument("-f", "--fore", choices=(get_format_choices(colorama.Fore)))
+    argparser.add_argument(
+        "-s", "--style", choices=(get_format_choices(colorama.Style))
+    )
+    argparser.add_argument("regex")
+
+    if _HAS_ARGCOMPLETE:
+        argcomplete.autocomplete(argparser)
+
+    return argparser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    colorama.init(strip=False)
+
+    format_choices = [
+        (colorama.Back, args.back),
+        (colorama.Fore, args.fore),
+        (colorama.Style, args.style),
+    ]
+    formats = [
+        getattr(format_type, arg.upper())
+        for (format_type, arg) in format_choices
+        if arg
+    ]
+    stdin = sys.stdin.read()
+    formatted_stdin = re.sub(
+        args.regex,
+        f"{''.join(formats)}\g<0>{colorama.Style.RESET_ALL}",
+        stdin,
+        flags=re.M,
+    )
+
+    print(formatted_stdin, end="")
+
+    colorama.deinit()
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

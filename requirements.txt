@@ -1,1 +1,2 @@
 --requirement mkjournals/requirements.txt
+--requirement colore/requirements.txt
