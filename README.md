@@ -8,7 +8,8 @@ repository:
 
 ```
 $ python3 -m pip install --requirement requirements.txt
-$ stow --target="$HOME/.local/bin" \
+$ stow --ignore=requirements.txt \
+> --target="$HOME/.local/bin" \
 > fzl \
 > fzyedit \
 > fzyoink \
