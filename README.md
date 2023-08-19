@@ -10,7 +10,6 @@ repository:
 $ python3 -m pip install --requirement requirements.txt
 $ stow --ignore=requirements.txt \
 > --target="$HOME/.local/bin" \
-> fzl \
 > fzyedit \
 > fzyoink \
 > git-fzfixup \
