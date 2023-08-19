@@ -39,16 +39,16 @@ def main():
 
     colorama.init(strip=False)
 
-    format_choices = [
+    format_choices = (
         (colorama.Back, args.back),
         (colorama.Fore, args.fore),
         (colorama.Style, args.style),
-    ]
-    formats = [
+    )
+    formats = (
         getattr(format_type, arg.upper())
         for (format_type, arg) in format_choices
         if arg
-    ]
+    )
     stdin = sys.stdin.read()
     formatted_stdin = re.sub(
         args.regex,
