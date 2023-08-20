@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 
+import argparse
 import os.path
 import pathlib
 import calendar
 import datetime
 from dateutil.relativedelta import relativedelta
 import sys
+
+
+def _parse_args():
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument("journal_dir")
+    argparser.add_argument("month_offsets", nargs=argparse.REMAINDER)
+
+    return argparser.parse_args()
 
 
 def _mkjournals(dt, journal_dir, month_offsets):
@@ -29,13 +39,15 @@ def _mkjournals(dt, journal_dir, month_offsets):
 
 
 def main():
+    args = _parse_args()
+
     if len(sys.argv) < 3:
         print(f"{os.path.basename(sys.argv[0])}: missing operands", file=sys.stderr)
 
         return 1
 
     journals = " ".join(
-        _mkjournals(datetime.datetime.today(), sys.argv[1], sys.argv[2:])
+        _mkjournals(datetime.datetime.today(), args.journal_dir, args.month_offsets)
     )
 
     if not journals:
