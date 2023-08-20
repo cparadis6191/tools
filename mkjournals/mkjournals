@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 import sys
 
 
-def mkjournals(dt, journal_dir, month_offsets):
+def _mkjournals(dt, journal_dir, month_offsets):
     months = [
         dt + relativedelta(months=int(month_offset)) for month_offset in month_offsets
     ]
@@ -35,7 +35,7 @@ def main():
         return 1
 
     journals = " ".join(
-        mkjournals(datetime.datetime.today(), sys.argv[1], sys.argv[2:])
+        _mkjournals(datetime.datetime.today(), sys.argv[1], sys.argv[2:])
     )
 
     if not journals:
