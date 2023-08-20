@@ -15,16 +15,17 @@ except ImportError:
     _HAS_ARGCOMPLETE = False
 
 
-def parse_args():
-    def get_format_choices(format_type):
-        return [choice.lower() for choice in dir(format_type) if choice.isupper()]
+def _get_format_choices(format_type):
+    return [choice.lower() for choice in dir(format_type) if choice.isupper()]
 
+
+def _parse_args():
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument("-b", "--back", choices=(get_format_choices(colorama.Back)))
-    argparser.add_argument("-f", "--fore", choices=(get_format_choices(colorama.Fore)))
+    argparser.add_argument("-b", "--back", choices=(_get_format_choices(colorama.Back)))
+    argparser.add_argument("-f", "--fore", choices=(_get_format_choices(colorama.Fore)))
     argparser.add_argument(
-        "-s", "--style", choices=(get_format_choices(colorama.Style))
+        "-s", "--style", choices=(_get_format_choices(colorama.Style))
     )
     argparser.add_argument("regex")
 
@@ -35,7 +36,7 @@ def parse_args():
 
 
 def main():
-    args = parse_args()
+    args = _parse_args()
 
     colorama.init(strip=False)
 
