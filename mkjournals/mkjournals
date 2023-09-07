@@ -33,7 +33,10 @@ def _mkjournals(dt, journal_dir, month_offsets):
                 exist_ok=True, parents=True
             )
             with open(journal, "w") as journal:
-                journal.write(f"{calendar.month(month.year, month.month)}\n# week \n")
+                calendar_lines = calendar.month(month.year, month.month).split("\n")
+                calendar_lines[0] = calendar_lines[0].lstrip() + "\n"
+                calendar_string = "\n".join(calendar_lines)
+                journal.write(f"# {calendar_string}\n## week \n")
 
     return journals
 
