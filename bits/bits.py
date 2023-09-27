@@ -94,14 +94,22 @@ def _from_bits(bit_string):
 
 
 def _parse_args():
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(
+        description="Convert from/to bits. With no arguments, convert from bits to bytes."
+    )
 
     to_from_group = argparser.add_mutually_exclusive_group()
 
     to_from_group.add_argument(
-        "-f", "--from", action="store_true", dest="_from"
+        "-f",
+        "--from",
+        action="store_true",
+        dest="_from",
+        help="Convert FROM bits to bytes.",
     )
-    to_from_group.add_argument("-t", "--to", action="store_true")
+    to_from_group.add_argument(
+        "-t", "--to", action="store_true", help="Convert from bytes TO bits."
+    )
 
     if _HAS_ARGCOMPLETE:
         argcomplete.autocomplete(argparser)
