@@ -49,8 +49,14 @@ def main():
 
         return 1
 
+    today_dt = datetime.datetime.today()
+    start_of_week_is_monday = True
+    start_of_week_dt = today_dt - datetime.timedelta(
+        days=(today_dt.weekday() if start_of_week_is_monday else today_dt.isoweekday())
+        % 7
+    )
     journals = " ".join(
-        _mkjournals(datetime.datetime.today(), args.journal_dir, args.month_offsets)
+        _mkjournals(start_of_week_dt, args.journal_dir, args.month_offsets)
     )
 
     if not journals:
