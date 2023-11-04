@@ -1,63 +1,52 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
-set -eEu -o pipefail
 
-usage() {
-	cat << HEREDOC
-Usage:
-	$(basename -- "$0")
-	$(basename -- "$0") | command
-	$(basename -- "$0") > file
+import argparse
+from pathlib import Path
+import os
+import subprocess
+import sys
 
-Fuzzy find text from yoink-impl and the clipboard history file.
 
-Set \$FZ_CLIPBOARD_HISTORY_FILE to specify the clipboard history file. The one
-currently in use is:
-	"${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
-HEREDOC
-}
+_FZ_CLIPBOARD_HISTORY_FILE_STRING = os.getenv(
+    "FZ_CLIPBOARD_HISTORY_FILE", os.path.join(Path.home(), ".fz_clipboard_history")
+)
 
-fzyoink() {
-	local fz_clipboard_history_file="${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
 
-	if [[ ! -f "$fz_clipboard_history_file" ]]; then
-		touch "$fz_clipboard_history_file"
-	fi
+def _parse_args():
+    argparser = argparse.ArgumentParser(
+        description="Fuzzy find text from yoink-impl and the clipboard history file.",
+        epilog="Set $FZ_CLIPBOARD_HISTORY_FILE to specify the clipboard history file. "
+        + "The one currently in use is: \n"
+        + "\t"
+        + _FZ_CLIPBOARD_HISTORY_FILE_STRING,
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
 
-	tail --lines=100 --quiet --zero-terminated "$fz_clipboard_history_file" <(echo -en "$(yoink)\0") |
-		# Remove duplicates
-		uniq --zero-terminated |
-		# Delete empty
-		sed --null-data '/^$/d' |
-		# Reverse so recent text is first
-		tac --separator= - |
-		fzf --preview='echo {}' --multi --read0
-}
+    return argparser.parse_args()
 
-while getopts h opt; do
-	case $opt in
-		h)
-			usage
 
-			exit 0
-			;;
-		*)
-			{
-				echo "Try '$(basename -- "$0") -h' for more information."
-			} 1>&2
+def main():
+    args = _parse_args()
 
-			exit 1
-			;;
-	esac
-done
+    with open(
+        _FZ_CLIPBOARD_HISTORY_FILE_STRING, mode="br"
+    ) as fz_clipboard_history_file:
+        lines = fz_clipboard_history_file.read().rstrip(b"\x00").split(b"\x00")
+        # Delete empty
+        lines = [line for line in lines if len(line) != 0]
+        # Remove duplicates
+        lines = [*dict.fromkeys(lines)]
+        # Reverse so recent text is first
+        lines.reverse()
 
-if [ $# -ne 0 ]; then
-	{
-		echo "$(basename -- "$0"): Unexpected operands"
-		echo "Try '$(basename -- "$0") -h' for more information."
-	} 1>&2
+        completed_process = subprocess.run(
+            ["fzf", "--multi", "--preview=echo {}", "--read0"],
+            input=b"\x00".join(lines[-100:]),
+        )
 
-	exit 1
-fi
+    return completed_process.returncode
 
-fzyoink
+
+if __name__ == "__main__":
+    sys.exit(main())
