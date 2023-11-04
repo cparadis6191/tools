@@ -1,54 +1,43 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
-set -e
 
-usage() {
-	cat << HEREDOC
-Usage:
-	command | $(basename -- "$0")
+import argparse
+import os
+from pathlib import Path
+import subprocess
+import sys
 
-Redirect standard input to yeet-impl and add it to the clipboard history file.
 
-Set \$FZ_CLIPBOARD_HISTORY_FILE to specify the clipboard history file. The one
-currently in use is:
-	"${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
-HEREDOC
-}
+_FZ_CLIPBOARD_HISTORY_FILE_STRING = os.getenv(
+    "FZ_CLIPBOARD_HISTORY_FILE", os.path.join(Path.home(), ".fz_clipboard_history")
+)
 
-yeet() {
-	local fz_clipboard_history_file="${FZ_CLIPBOARD_HISTORY_FILE:-$HOME/.fz_clipboard_history}"
 
-	local text
-	text="$(cat -)"
+def _parse_args():
+    argparser = argparse.ArgumentParser(
+        description="Redirect standard input to yeet-impl and add it to the clipboard history file.",
+        epilog="Set $FZ_CLIPBOARD_HISTORY_FILE to specify the clipboard history file. "
+        + "The one currently in use is: \n"
+        + "\t"
+        + _FZ_CLIPBOARD_HISTORY_FILE_STRING,
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
 
-	echo -n "$text" | yeet-impl
-	echo -en "$text\0" >> "$fz_clipboard_history_file"
-}
+    return argparser.parse_args()
 
-while getopts h opt; do
-	case $opt in
-		h)
-			usage
 
-			exit 0
-			;;
-		*)
-			{
-				echo "Try '$(basename -- "$0") -h' for more information."
-			} 1>&2
+def main():
+    _parse_args()
 
-			exit 1
-			;;
-	esac
-done
+    stdin = sys.stdin.buffer.read()
 
-if [ $# -ne 0 ]; then
-	{
-		echo "$(basename -- "$0"): Unexpected operands"
-		echo "Try '$(basename -- "$0") -h' for more information."
-	} 1>&2
+    completed_process = subprocess.run(["yeet-impl"], check=True, input=stdin)
 
-	exit 1
-fi
+    with open(_FZ_CLIPBOARD_HISTORY_FILE_STRING, "ab") as fz_clipboard_history_file:
+        fz_clipboard_history_file.write(stdin + b"\x00")
 
-yeet
+    return completed_process.returncode
+
+
+if __name__ == "__main__":
+    sys.exit(main())
