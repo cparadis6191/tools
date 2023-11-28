@@ -18,6 +18,46 @@ def _parse_args():
     return argparser.parse_args()
 
 
+def _get_week_of_month(d):
+    """
+    >>> _get_week_of_month(datetime.datetime(2023, 5, 1, 22, 22, 18, 97546).date())
+    0
+
+    >>> _get_week_of_month(datetime.datetime(2023, 5, 7, 22, 22, 18, 97546).date())
+    0
+
+    >>> _get_week_of_month(datetime.datetime(2023, 5, 8, 22, 22, 18, 97546).date())
+    1
+
+    >>> _get_week_of_month(datetime.datetime(2023, 5, 14, 22, 22, 18, 97546).date())
+    1
+
+    >>> _get_week_of_month(datetime.datetime(2023, 5, 15, 22, 22, 18, 97546).date())
+    2
+
+    >>> _get_week_of_month(datetime.datetime(2023, 11, 1, 22, 22, 18, 97546).date())
+    0
+
+    >>> _get_week_of_month(datetime.datetime(2023, 11, 5, 22, 22, 18, 97546).date())
+    0
+
+    >>> _get_week_of_month(datetime.datetime(2023, 11, 6, 22, 22, 18, 97546).date())
+    1
+
+    >>> _get_week_of_month(datetime.datetime(2023, 11, 12, 22, 22, 18, 97546).date())
+    1
+
+    >>> _get_week_of_month(datetime.datetime(2023, 11, 13, 22, 22, 18, 97546).date())
+    2
+    """
+    start_of_week_is_monday = True
+    return (
+        d.day
+        - 1
+        + ((d.weekday() if start_of_week_is_monday else d.isoweekday()) - d.day + 1) % 7
+    ) // 7
+
+
 def _mkjournals(dt, journal_dir, month_offsets):
     months = [
         dt + relativedelta(months=int(month_offset)) for month_offset in month_offsets
@@ -27,7 +67,9 @@ def _mkjournals(dt, journal_dir, month_offsets):
         month.date().strftime(f"{journal_dir}/%Y/%02m.journal") for month in months
     ]
 
-    for journal, month in zip(journals, months, strict=True):
+    for journal, month, month_offset in zip(
+        journals, months, month_offsets, strict=True
+    ):
         if not os.path.exists(journal) or os.path.getsize(journal) == 0:
             pathlib.Path(os.path.join(journal_dir, str(month.year))).mkdir(
                 exist_ok=True, parents=True
@@ -37,6 +79,13 @@ def _mkjournals(dt, journal_dir, month_offsets):
                 calendar_lines[0] = calendar_lines[0].lstrip() + "\n"
                 calendar_string = "\n".join(calendar_lines)
                 journal.write(f"# {calendar_string}\n## week \n")
+        elif month_offset == 0:
+            with open(journal, "a+") as journal:
+                journal.seek(0)
+
+                week_of_month = _get_week_of_month(month.date())
+                if f"\n## week {week_of_month}\n" not in journal.read():
+                    journal.write(f"\n## week {week_of_month}\n")
 
     return journals
 
