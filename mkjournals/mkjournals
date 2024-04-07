@@ -30,13 +30,11 @@ def _get_months_and_journals(dt, journal_dir, month_offsets):
     ['./2023/11.journal', './2023/12.journal', './2024/01.journal']
     """
     months = [
-        dt + relativedelta(months=int(month_offset))
-        for month_offset in month_offsets
+        dt + relativedelta(months=int(month_offset)) for month_offset in month_offsets
     ]
 
     journals = [
-        month.date().strftime(f"{journal_dir}/%Y/%02m.journal")
-        for month in months
+        month.date().strftime(f"{journal_dir}/%Y/%02m.journal") for month in months
     ]
 
     return months, journals
@@ -98,7 +96,9 @@ def _mkjournals(dt, journal_dir, month_offsets):
                 calendar_string = "\n".join(calendar_lines)
                 journal.write(f"# {calendar_string}")
 
-                week_of_month = _get_week_of_month(month.date()) if month_offset == 0 else 1
+                week_of_month = (
+                    _get_week_of_month(month.date()) if month_offset == 0 else 1
+                )
                 journal.write(f"\n## week {week_of_month}\n")
         elif month_offset == 0:
             with open(journal, "a+") as journal:
