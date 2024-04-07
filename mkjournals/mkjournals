@@ -21,41 +21,41 @@ def _parse_args():
 def _get_week_of_month(d):
     """
     >>> _get_week_of_month(datetime.datetime(2023, 5, 1, 22, 22, 18, 97546).date())
-    0
+    1
 
     >>> _get_week_of_month(datetime.datetime(2023, 5, 7, 22, 22, 18, 97546).date())
-    0
+    1
 
     >>> _get_week_of_month(datetime.datetime(2023, 5, 8, 22, 22, 18, 97546).date())
-    1
+    2
 
     >>> _get_week_of_month(datetime.datetime(2023, 5, 14, 22, 22, 18, 97546).date())
-    1
+    2
 
     >>> _get_week_of_month(datetime.datetime(2023, 5, 15, 22, 22, 18, 97546).date())
-    2
+    3
 
     >>> _get_week_of_month(datetime.datetime(2023, 11, 1, 22, 22, 18, 97546).date())
-    0
+    1
 
     >>> _get_week_of_month(datetime.datetime(2023, 11, 5, 22, 22, 18, 97546).date())
-    0
+    1
 
     >>> _get_week_of_month(datetime.datetime(2023, 11, 6, 22, 22, 18, 97546).date())
-    1
+    2
 
     >>> _get_week_of_month(datetime.datetime(2023, 11, 12, 22, 22, 18, 97546).date())
-    1
+    2
 
     >>> _get_week_of_month(datetime.datetime(2023, 11, 13, 22, 22, 18, 97546).date())
-    2
+    3
     """
     start_of_week_is_monday = True
     return (
         d.day
         - 1
         + ((d.weekday() if start_of_week_is_monday else d.isoweekday()) - d.day + 1) % 7
-    ) // 7
+    ) // 7 + 1
 
 
 def _mkjournals(dt, journal_dir, month_offsets):
