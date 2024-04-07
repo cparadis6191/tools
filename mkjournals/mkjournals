@@ -18,6 +18,30 @@ def _parse_args():
     return argparser.parse_args()
 
 
+def _get_months_and_journals(dt, journal_dir, month_offsets):
+    """
+    >>> _get_months_and_journals(datetime.datetime.today(), ".", [0])[1]
+    ['./2024/04.journal']
+
+    >>> _get_months_and_journals(datetime.datetime.today(), ".", [0, 1, 2])[1]
+    ['./2024/04.journal', './2024/05.journal', './2024/06.journal']
+
+    >>> _get_months_and_journals(datetime.datetime(2023, 11, 1, 20, 2, 52, 330729), ".", [0, 1, 2])[1]
+    ['./2023/11.journal', './2023/12.journal', './2024/01.journal']
+    """
+    months = [
+        dt + relativedelta(months=int(month_offset))
+        for month_offset in month_offsets
+    ]
+
+    journals = [
+        month.date().strftime(f"{journal_dir}/%Y/%02m.journal")
+        for month in months
+    ]
+
+    return months, journals
+
+
 def _get_week_of_month(d):
     """
     >>> _get_week_of_month(datetime.datetime(2023, 5, 1, 22, 22, 18, 97546).date())
@@ -59,13 +83,7 @@ def _get_week_of_month(d):
 
 
 def _mkjournals(dt, journal_dir, month_offsets):
-    months = [
-        dt + relativedelta(months=int(month_offset)) for month_offset in month_offsets
-    ]
-
-    journals = [
-        month.date().strftime(f"{journal_dir}/%Y/%02m.journal") for month in months
-    ]
+    months, journals = _get_months_and_journals(dt, journal_dir, month_offsets)
 
     for journal, month, month_offset in zip(
         journals, months, month_offsets, strict=True
