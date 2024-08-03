@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+
+"""
+Any code blocks or lines with a "pipe" attribute will have the contents of that
+attribute executed as a shell command. The body of the block/line will be piped
+to that command's stdin, and the stdout will replace the body of that
+block/line. A non-zero exit code will cause PanPipe to exit with that code;
+stderr will be sent to PanPipe's stderr.
+
+This is a reimplimentation of https://github.com/Warbo/panpipe.
+"""
+
+
+import os
+import panflute as pf
+import subprocess
+import sys
+import tempfile
+
+
+_TEMP_DIR = None
+
+
+def _run_elem_as_command(elem, command):
+    global _TEMP_DIR
+
+    return subprocess.run(
+        command,
+        capture_output=True,
+        cwd=_TEMP_DIR,
+        input=elem.text.encode("utf-8"),
+        shell=True,
+    )
+
+
+def _command_output_to_code_block_elem(elem, stdout):
+    if type(elem) is not pf.CodeBlock:
+        pf.debug(f"Could not output to code block elem:\n{str(elem)}\n")
+
+        return None
+
+    elem.text = stdout
+
+    return elem
+
+
+def _command_output_to_code_elem(elem, stdout):
+    if type(elem) is not pf.Code:
+        pf.debug(f"Could not output to code elem:\n{str(elem)}\n")
+
+        return None
+
+    elem.text = stdout
+
+    return elem
+
+
+def _panpype_filter_code_block(elem, doc):
+    if type(elem) is not pf.CodeBlock:
+        return None
+
+    if "pipe" in elem.attributes:
+        command = elem.attributes.pop("pipe")
+
+        result = _run_elem_as_command(elem, command)
+
+        if not result:
+            return None
+
+        if result.returncode != 0:
+            pf.debug(f"Could not pipe code block:\n{str(elem)}\n")
+            pf.debug(result.stderr.decode("utf-8"))
+
+            sys.exit(result.returncode)
+
+        # Run the code block but hide the output.
+        if "hidden" in elem.classes:
+            return pf.CodeBlock("", classes=["hidden"])
+
+        return _command_output_to_code_block_elem(elem, result.stdout.decode("utf-8"))
+
+
+def _panpype_filter_code(elem, doc):
+    if type(elem) is not pf.Code:
+        return None
+
+    if "pipe" in elem.attributes:
+        command = elem.attributes.pop("pipe")
+
+        result = _run_elem_as_command(elem, command)
+
+        if not result:
+            return None
+
+        if result.returncode != 0:
+            pf.debug(f"Could not pipe code:\n{str(elem)}\n")
+            pf.debug(result.stderr.decode("utf-8"))
+
+            sys.exit(result.returncode)
+
+        # Run the code but hide the output.
+        if "hidden" in elem.classes:
+            return pf.Code("", classes=["hidden"])
+
+        return _command_output_to_code_elem(elem, result.stdout.decode("utf-8"))
+
+
+def main():
+    global _TEMP_DIR
+
+    with tempfile.TemporaryDirectory() as _TEMP_DIR:
+        os.symlink(
+            os.getcwd(), os.path.join(_TEMP_DIR, "root"), target_is_directory=True
+        )
+
+        pf.toJSONFilters([_panpype_filter_code_block, _panpype_filter_code])
+
+        return 0
+
+    return -1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
