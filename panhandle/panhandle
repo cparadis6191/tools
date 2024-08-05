@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+
+"""
+Any code blocks or lines with an “unwrap” class will have their contents parsed
+using Pandoc, then spliced into the document (inside a Div or Span). The
+content must be in “pandoc-json” format, which you can get by passing the -t
+json option to Pandoc.
+
+This is a reimplimentation of https://github.com/Warbo/panhandle.
+"""
+
+
+import io
+import panflute as pf
+import sys
+
+
+def _panhandle_filter_code_block(elem, doc):
+    if type(elem) is not pf.CodeBlock:
+        return None
+
+    unwrap = "unwrap" in elem.classes
+
+    if not unwrap:
+        return None
+
+    elem.classes.remove("unwrap")
+
+    # TODO: Put this in a `pf.Div()`.
+    return pf.convert_text(elem.text, input_format="json")
+
+
+def _panhandle_filter_code(elem, doc):
+    if type(elem) is not pf.Code:
+        return None
+
+    unwrap = "unwrap" in elem.classes
+
+    if not unwrap:
+        return None
+
+    elem.classes.remove("unwrap")
+
+    # TODO: Put this in a `pf.Span()`.
+    return pf.convert_text(elem.text, input_format="json")[0].content[0]
+
+
+def main():
+    pf.toJSONFilters([_panhandle_filter_code_block, _panhandle_filter_code])
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
