@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+set -eEu -o pipefail
+
+usage() {
+	cat << HEREDOC
+Usage:
+	$(basename -- "$0") [<args>] FILE...
+	$(basename -- "$0") README.md
+	$(basename -- "$0") -f html README.md
+	$(basename -- "$0") -f pdf README.md
+	$(basename -- "$0") -f html -o output/README.md README.md
+
+	Set the \$MKMD_OPEN environment variable to use a different program to open
+	the output file.
+
+	In WSL, form example, set \$MKMD_OPEN to something like the following:
+
+	\`\`\`
+	#!/usr/bin/env bash
+
+	explorer.exe "\$(wslpath -w "\$*")"
+	\`\`\`
+HEREDOC
+}
+
+mkmd() {
+	output_format="$1"
+	shift
+
+	output="$1"
+	shift
+
+	pandoc \
+		--from=markdown "$@" \
+		--to="$output_format" \
+		--embed-resources \
+		--standalone \
+		--output="$output.$output_format" \
+		--metadata=title:"$*" \
+		--table-of-contents \
+		--toc-depth=6
+
+	"${MKMD_OPEN:-xdg-open}" "$output.$output_format" &
+}
+
+output_format="html"
+output=""
+
+while getopts f:ho: opt; do
+	case $opt in
+		f)
+			output_format="$OPTARG"
+			;;
+		h)
+			usage
+
+			exit 0
+			;;
+		o)
+			output="$OPTARG"
+			;;
+		*)
+			{
+				echo "Try '$(basename -- "$0") -h' for more information."
+			} 1>&2
+
+			exit 1
+			;;
+	esac
+done
+
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+	{
+		echo "$(basename -- "$0"): Expected command"
+		echo "Try '$(basename -- "$0") -h' for more information."
+	} 1>&2
+
+	exit 2
+fi
+
+if [ -z "$output" ]; then
+	output="$(mktemp)"
+fi
+
+mkmd "$output_format" "$output" "$@"

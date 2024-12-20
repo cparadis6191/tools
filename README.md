@@ -18,6 +18,7 @@ $ stow --ignore=requirements.txt \
 > git-quickfix \
 > git-rmhooks \
 > mkjournals \
+> mkmd \
 > qfvim \
 > vicmd \
 > vipe \
