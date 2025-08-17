@@ -76,7 +76,7 @@ def _panpype_filter_code_block(elem, doc):
 
         # Run the code block but hide the output.
         if "hidden" in elem.classes:
-            return pf.CodeBlock("", classes=["hidden"])
+            return pf.CodeBlock("", attributes=elem.attributes, classes=elem.classes)
 
         return _command_output_to_code_block_elem(elem, result.stdout.decode("utf-8"))
 
@@ -101,7 +101,7 @@ def _panpype_filter_code(elem, doc):
 
         # Run the code but hide the output.
         if "hidden" in elem.classes:
-            return pf.Code("", classes=["hidden"])
+            return pf.Code("", attributes=elem.attributes, classes=elem.classes)
 
         return _command_output_to_code_elem(elem, result.stdout.decode("utf-8"))
 
