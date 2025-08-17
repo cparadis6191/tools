@@ -95,18 +95,9 @@ def _mkjournals(dt, journal_dir, month_offsets):
                 calendar_lines[0] = calendar_lines[0].lstrip() + "\n"
                 calendar_string = "\n".join(calendar_lines)
                 journal.write(f"# {calendar_string}")
-
-                week_of_month = (
-                    _get_week_of_month(month.date()) if month_offset == 0 else 1
-                )
-                journal.write(f"\n## week {week_of_month}\n")
         elif month_offset == 0:
             with open(journal, "a+") as journal:
                 journal.seek(0)
-
-                week_of_month = _get_week_of_month(month.date())
-                if f"\n## week {week_of_month}\n" not in journal.read():
-                    journal.write(f"\n## week {week_of_month}\n")
 
     return journals
 
