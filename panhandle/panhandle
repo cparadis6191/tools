@@ -25,7 +25,11 @@ def _panhandle_filter_code_block(elem, doc):
 
     elem.classes.remove("unwrap")
 
-    return pf.Div(*pf.convert_text(elem.text, input_format="json"))
+    return pf.Div(
+        *pf.convert_text(elem.text, input_format="json"),
+        attributes=elem.attributes,
+        classes=elem.classes,
+    )
 
 
 def _panhandle_filter_code(elem, doc):
@@ -42,7 +46,9 @@ def _panhandle_filter_code(elem, doc):
             inline
             for para in pf.convert_text(elem.text, input_format="json")
             for inline in para.content.list
-        ]
+        ],
+        attributes=elem.attributes,
+        classes=elem.classes,
     )
 
 
