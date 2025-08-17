@@ -37,8 +37,13 @@ def _panhandle_filter_code(elem, doc):
 
     elem.classes.remove("unwrap")
 
-    # TODO: Put this in a `pf.Span()`.
-    return pf.convert_text(elem.text, input_format="json")[0].content[0]
+    return pf.Span(
+        *[
+            inline
+            for para in pf.convert_text(elem.text, input_format="json")
+            for inline in para.content.list
+        ]
+    )
 
 
 def main():
