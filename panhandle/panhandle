@@ -20,9 +20,7 @@ def _panhandle_filter_code_block(elem, doc):
     if type(elem) is not pf.CodeBlock:
         return None
 
-    unwrap = "unwrap" in elem.classes
-
-    if not unwrap:
+    if not "unwrap" in elem.classes:
         return None
 
     elem.classes.remove("unwrap")
@@ -35,9 +33,7 @@ def _panhandle_filter_code(elem, doc):
     if type(elem) is not pf.Code:
         return None
 
-    unwrap = "unwrap" in elem.classes
-
-    if not unwrap:
+    if not "unwrap" in elem.classes:
         return None
 
     elem.classes.remove("unwrap")
