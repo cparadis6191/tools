@@ -25,6 +25,9 @@ def _panhandle_filter_code_block(elem, doc):
 
     elem.classes.remove("unwrap")
 
+    if not elem.text:
+        return pf.Div(attributes=elem.attributes, classes=elem.classes)
+
     return pf.Div(
         *pf.convert_text(elem.text, input_format="json"),
         attributes=elem.attributes,
@@ -40,6 +43,9 @@ def _panhandle_filter_code(elem, doc):
         return None
 
     elem.classes.remove("unwrap")
+
+    if not elem.text:
+        return pf.Span(attributes=elem.attributes, classes=elem.classes)
 
     return pf.Span(
         *[
