@@ -6,6 +6,8 @@ stdenv.mkDerivation {
 
   src = ./.;
 
+  buildInputs = [ fzf git pandoc python3 vim ];
+
   dontBuild = true;
 
   installPhase = ''
