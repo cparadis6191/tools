@@ -53,7 +53,7 @@ def main():
     stdin = sys.stdin.read()
     formatted_stdin = re.sub(
         args.regex,
-        f"{''.join(formats)}\g<0>{colorama.Style.RESET_ALL}",
+        f"{''.join(formats)}\\g<0>{colorama.Style.RESET_ALL}",
         stdin,
         flags=re.M,
     )
