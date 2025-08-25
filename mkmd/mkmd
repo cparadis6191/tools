@@ -36,6 +36,8 @@ mkmd() {
 		--to="$output_format" \
 		--embed-resources \
 		--standalone \
+		--filter=panpype \
+		--filter=panhandle \
 		--output="$output.$output_format" \
 		--metadata=title:"$*" \
 		--table-of-contents \
