@@ -38,6 +38,7 @@ mkmd() {
 		--standalone \
 		--filter=panpype \
 		--filter=panhandle \
+		--lua-filter=diagram.lua \
 		--output="$output.$output_format" \
 		--metadata=title:"$*" \
 		--table-of-contents \
