@@ -36,7 +36,6 @@ mkmd() {
 		--to="$output_format" \
 		--embed-resources \
 		--standalone \
-		--lua-filter=<(curl https://raw.githubusercontent.com/cparadis6191/diagram/18834d83084c757cee36f2f827ea8d8048fce0c2/_extensions/diagram/diagram.lua) \
 		--filter=panpype \
 		--filter=panhandle \
 		--output="$output.$output_format" \
