@@ -10,7 +10,6 @@ json option to Pandoc.
 This is a reimplimentation of https://github.com/Warbo/panhandle.
 """
 
-
 import io
 import panflute as pf
 import sys
