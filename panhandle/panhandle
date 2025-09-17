@@ -10,7 +10,6 @@ json option to Pandoc.
 This is a reimplimentation of https://github.com/Warbo/panhandle.
 """
 
-import io
 import panflute as pf
 import sys
 
@@ -19,7 +18,7 @@ def _panhandle_filter_code_block(elem, doc):
     if type(elem) is not pf.CodeBlock:
         return None
 
-    if not "unwrap" in elem.classes:
+    if "unwrap" not in elem.classes:
         return None
 
     elem.classes.remove("unwrap")
@@ -38,7 +37,7 @@ def _panhandle_filter_code(elem, doc):
     if type(elem) is not pf.Code:
         return None
 
-    if not "unwrap" in elem.classes:
+    if "unwrap" not in elem.classes:
         return None
 
     elem.classes.remove("unwrap")
