@@ -41,7 +41,7 @@ mkmd() {
 		--lua-filter=diagram.lua \
 		--output="$output.$output_format" \
 		--metadata=title:"$*" \
-		--request-header User-Agent:"Mozilla/5.0"
+		--request-header User-Agent:"Mozilla/5.0" \
 		--table-of-contents \
 		--toc-depth=6
 
